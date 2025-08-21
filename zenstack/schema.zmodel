@@ -8,19 +8,21 @@ datasource db {
 
 /// User model
 model User {
-    id       String @id @default(cuid())
-    email    String @unique @email @length(6, 32)
+    id       Int    @id @default(autoincrement())
+    email    String @unique
     posts    Post[]
 }
 
 /// Post model
 model Post {
-    id        String   @id @default(cuid())
+    id        Int      @id @default(autoincrement())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    title     String   @length(1, 256)
-    content   String
+    title     String
+    content   String?
+    slug      String?  @unique
     published Boolean  @default(false)
-    author    User     @relation(fields: [authorId], references: [id])
-    authorId  String
+    viewCount Int      @default(0)
+    author    User?    @relation(fields: [authorId], references: [id])
+    authorId  Int?
 }

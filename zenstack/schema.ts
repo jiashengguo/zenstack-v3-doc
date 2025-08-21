@@ -16,16 +16,16 @@ export const schema = {
             fields: {
                 id: {
                     name: "id",
-                    type: "String",
+                    type: "Int",
                     id: true,
-                    attributes: [{ name: "@id" }, { name: "@default", args: [{ name: "value", value: ExpressionUtils.call("cuid") }] }],
-                    default: ExpressionUtils.call("cuid")
+                    attributes: [{ name: "@id" }, { name: "@default", args: [{ name: "value", value: ExpressionUtils.call("autoincrement") }] }],
+                    default: ExpressionUtils.call("autoincrement")
                 },
                 email: {
                     name: "email",
                     type: "String",
                     unique: true,
-                    attributes: [{ name: "@unique" }, { name: "@email" }, { name: "@length", args: [{ name: "min", value: ExpressionUtils.literal(6) }, { name: "max", value: ExpressionUtils.literal(32) }] }]
+                    attributes: [{ name: "@unique" }]
                 },
                 posts: {
                     name: "posts",
@@ -36,7 +36,7 @@ export const schema = {
             },
             idFields: ["id"],
             uniqueFields: {
-                id: { type: "String" },
+                id: { type: "Int" },
                 email: { type: "String" }
             }
         },
@@ -45,10 +45,10 @@ export const schema = {
             fields: {
                 id: {
                     name: "id",
-                    type: "String",
+                    type: "Int",
                     id: true,
-                    attributes: [{ name: "@id" }, { name: "@default", args: [{ name: "value", value: ExpressionUtils.call("cuid") }] }],
-                    default: ExpressionUtils.call("cuid")
+                    attributes: [{ name: "@id" }, { name: "@default", args: [{ name: "value", value: ExpressionUtils.call("autoincrement") }] }],
+                    default: ExpressionUtils.call("autoincrement")
                 },
                 createdAt: {
                     name: "createdAt",
@@ -64,12 +64,19 @@ export const schema = {
                 },
                 title: {
                     name: "title",
-                    type: "String",
-                    attributes: [{ name: "@length", args: [{ name: "min", value: ExpressionUtils.literal(1) }, { name: "max", value: ExpressionUtils.literal(256) }] }]
+                    type: "String"
                 },
                 content: {
                     name: "content",
-                    type: "String"
+                    type: "String",
+                    optional: true
+                },
+                slug: {
+                    name: "slug",
+                    type: "String",
+                    unique: true,
+                    optional: true,
+                    attributes: [{ name: "@unique" }]
                 },
                 published: {
                     name: "published",
@@ -77,15 +84,23 @@ export const schema = {
                     attributes: [{ name: "@default", args: [{ name: "value", value: ExpressionUtils.literal(false) }] }],
                     default: false
                 },
+                viewCount: {
+                    name: "viewCount",
+                    type: "Int",
+                    attributes: [{ name: "@default", args: [{ name: "value", value: ExpressionUtils.literal(0) }] }],
+                    default: 0
+                },
                 author: {
                     name: "author",
                     type: "User",
+                    optional: true,
                     attributes: [{ name: "@relation", args: [{ name: "fields", value: ExpressionUtils.array([ExpressionUtils.field("authorId")]) }, { name: "references", value: ExpressionUtils.array([ExpressionUtils.field("id")]) }] }],
                     relation: { opposite: "posts", fields: ["authorId"], references: ["id"] }
                 },
                 authorId: {
                     name: "authorId",
-                    type: "String",
+                    type: "Int",
+                    optional: true,
                     foreignKeyFor: [
                         "author"
                     ]
@@ -93,7 +108,8 @@ export const schema = {
             },
             idFields: ["id"],
             uniqueFields: {
-                id: { type: "String" }
+                id: { type: "Int" },
+                slug: { type: "String" }
             }
         }
     },
